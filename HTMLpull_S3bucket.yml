@@ -1,0 +1,33 @@
+AWSTemplateformatVersion: 2018-09-09
+Description: Create an S3 Bucket, Pull HTML file from Github, Put it in S3 bucket
+Parameters:
+Type:String
+Description: Link of html to pull
+Default: https://github.com/lhynesg/html/index.html
+
+Bucketname:  sgbucket1
+Type: String
+Description: Name of the bucket
+
+Resources:
+Deploytos3:
+Type: AWS::Serverless::Function
+Properties:
+Handler: index.handler
+Runtime: nodejs 6.10
+CodeURL: htmldeploy
+Memorysize: 512
+Timeout: 300
+Environment:
+Variables:
+TEST: WORKS
+Policies: 
+-AWSLambdaBasicExecutionRole
+-AmazonS3FullAccess
+DeploymentCustomResource:
+Type: Custom:deploytoS3
+Properties:
+ServiceToken: GetAtt deploytos3.Arm
+Bucketname: sgbucket1
+
+
